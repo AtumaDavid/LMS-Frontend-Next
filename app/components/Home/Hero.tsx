@@ -6,7 +6,7 @@ import { BiSearch } from "react-icons/bi";
 export default function Hero() {
   return (
     <div className="w-full min-h-screen relative pt-10">
-      <div className="w-full max-w-[80%] mx-auto px-4 flex flex-col 1000px:flex-row items-center justify-between gap-10 ">
+      <div className="w-full max-w-[80%] mx-auto px-4 flex flex-col 1000px:flex-row items-center justify-between 1000px:gap-40 ">
         {/* Left Circle Container */}
         <div className="w-[80%] 1000px:w-[40%] relative ">
           <div className="aspect-square relative">
@@ -24,7 +24,7 @@ export default function Hero() {
         </div>
 
         {/* Right Content Section */}
-        <div className="w-full 1000px:w-[60%] flex flex-col items-center text-center mt-[50px] 1000px:mt-0 1000px:items-start 1000px:text-left ">
+        <div className="w-full 1000px:w-[60%] flex flex-col items-center text-center mt-[50px] 1000px:mt-0 1000px:items-start 1000px:text-left">
           <h2 className="font-bold text-3xl sm:text-4xl 800px:text-5xl 1000px:text-6xl font-Josefin px-6 1000px:px-0">
             Improve Your Online Learning Experience Better Instantly
           </h2>
@@ -35,7 +35,7 @@ export default function Hero() {
           </p>
 
           {/* Search Bar */}
-          <div className="relative w-[90%] sm:w-[80%] max-w-[600px] mt-8">
+          <div className="relative w-[90%] sm:w-[80%] max-w-[600px] mt-8 ">
             <input
               type="text"
               placeholder="Search Courses..."
@@ -47,20 +47,23 @@ export default function Hero() {
           </div>
 
           {/* Social Proof */}
-          <div className="flex flex-col sm:flex-row items-center justify-center 1000px:justify-start gap-2 sm:gap-0 mt-8">
-            <div className="flex items-center -space-x-1.5">
-              {[1, 2, 3].map((index) => (
-                <div
-                  key={index}
-                  className="w-8 h-8 rounded-full border-2 border-white bg-slate-200"
-                />
-              ))}
-            </div>
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-0">
-              <p className="ml-3 text-[#000000ac] dark:text-[#ffffffac]">
+          <div className="sm:flex-row items-center justify-center 1000px:justify-start gap-2 sm:gap-0 mt-8">
+            <div className="flex gap-5 justify-center items-center">
+              <div className="flex items-center -space-x-1.5">
+                {[1, 2, 3].map((index) => (
+                  <div
+                    key={index}
+                    className="w-8 h-8 rounded-full border-2 border-white bg-slate-200"
+                  />
+                ))}
+              </div>
+              <p className=" text-[#000000ac] dark:text-[#ffffffac]">
                 500K+ People already trusted us.
               </p>
-              <span className="text-[#2526e3] cursor-pointer ml-1">
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center sm:items-start gap-1 sm:gap-0">
+              <span className="text-primary cursor-pointer ml-1">
                 View Courses
               </span>
             </div>
