@@ -64,7 +64,7 @@ export default function Header({ open, setOpen, activeItem }: Props) {
         }`}
       >
         <div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full ">
-          <div className="w-full h-[80px] flex items-center justify-between p-3 border border-green-700">
+          <div className="w-full h-[80px] flex items-center justify-between p-3 ">
             <div>
               <Link
                 href={"/"}
@@ -99,7 +99,7 @@ export default function Header({ open, setOpen, activeItem }: Props) {
             onClick={handleClose}
             id="screen"
           >
-            <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0 ">
+            <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 top-0 right-0 ">
               <NavItems activeItem={activeItem} isMobile={true} />
               <HiOutlineUserCircle
                 size={25}

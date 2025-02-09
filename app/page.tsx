@@ -3,6 +3,7 @@
 import Heading from "./utils/Heading";
 import Header from "./components/Header";
 import { useState } from "react";
+import Hero from "./components/Home/Hero";
 
 // interface Props {}
 
@@ -17,6 +18,7 @@ export default function Page() {
         keywords="Prrogramming, MERN, Redux, Machine Learning"
       />
       <Header open={open} activeItem={activeItem} setOpen={setOpen} />
+      <Hero />
     </div>
   );
 }
