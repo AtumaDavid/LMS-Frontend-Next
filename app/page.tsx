@@ -10,6 +10,8 @@ import Hero from "./components/Home/Hero";
 export default function Page() {
   const [open, setOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(0);
+  const [route, setRoute] = useState("Login");
+
   return (
     <div>
       <Heading
@@ -17,7 +19,13 @@ export default function Page() {
         description="ELearning is a platform for students to learn and get help from teachers"
         keywords="Prrogramming, MERN, Redux, Machine Learning"
       />
-      <Header open={open} activeItem={activeItem} setOpen={setOpen} />
+      <Header
+        open={open}
+        activeItem={activeItem}
+        setOpen={setOpen}
+        setRoute={setRoute}
+        route={route}
+      />
       <Hero />
     </div>
   );

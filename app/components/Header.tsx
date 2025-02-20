@@ -4,14 +4,26 @@ import { MouseEventHandler, useEffect, useState } from "react";
 import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi";
+import CustomModal from "../utils/CustomModal";
+import Login from "./Auth/Login";
+import Signup from "./Auth/Signup";
+import Verification from "./Auth/Verification";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   activeItem: number;
+  route: string;
+  setRoute: (route: string) => void;
 };
 
-export default function Header({ open, setOpen, activeItem }: Props) {
+export default function Header({
+  open,
+  setOpen,
+  activeItem,
+  route,
+  setRoute,
+}: Props) {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -115,6 +127,54 @@ export default function Header({ open, setOpen, activeItem }: Props) {
           </div>
         )}
       </div>
+      {/* {
+        route === "Sign-Up" && (
+          <>
+
+          </>
+        )
+      } */}
+      {route === "Login" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Login}
+            />
+          )}
+        </>
+      )}
+      {/* signup */}
+      {route === "Sign-Up" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Signup}
+            />
+          )}
+        </>
+      )}
+      {/* verification */}
+      {route === "Verification" && (
+        <>
+          {open && (
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }
