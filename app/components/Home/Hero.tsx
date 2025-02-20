@@ -5,7 +5,7 @@ import { BiSearch } from "react-icons/bi";
 
 export default function Hero() {
   return (
-    <div className="w-full min-h-screen relative pt-10">
+    <div className="w-full  relative py-16">
       <div className="w-full max-w-[80%] mx-auto px-4 flex flex-col 1000px:flex-row items-center justify-between 1000px:gap-40 ">
         {/* Left Circle Container */}
         <div className="w-[80%] 1000px:w-[40%] relative ">
@@ -35,7 +35,7 @@ export default function Hero() {
           </p>
 
           {/* Search Bar */}
-          <div className="relative w-[90%] sm:w-[80%] max-w-[600px] mt-8 ">
+          <div className="relative w-[90%] sm:w-[80%] max-w-[600px] mt-8 mx-auto">
             <input
               type="text"
               placeholder="Search Courses..."
@@ -47,7 +47,7 @@ export default function Hero() {
           </div>
 
           {/* Social Proof */}
-          <div className="sm:flex-row items-center justify-center 1000px:justify-start gap-2 sm:gap-0 mt-8">
+          <div className="items-center mx-auto justify-center 1000px:justify-start gap-2 sm:gap-0 mt-8">
             <div className="flex gap-5 justify-center items-center">
               <div className="flex items-center -space-x-1.5">
                 {[1, 2, 3].map((index) => (
