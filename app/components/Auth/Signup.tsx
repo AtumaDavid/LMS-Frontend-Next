@@ -37,7 +37,6 @@ export default function Signup({ setRoute }: Props) {
       setRoute?.("Verification");
     }
     if (error) {
-      // Improved error extraction logic to get precise messages
       if ("data" in error) {
         const errorData = error as FetchBaseQueryError;
         let errorMessage = "Registration failed. Please try again.";
@@ -55,7 +54,7 @@ export default function Signup({ setRoute }: Props) {
           }
         }
 
-        // Display specific error message, like "Email already exists"
+        // Display specific error message
         toast.error(errorMessage);
       } else {
         // Handle serialized errors
