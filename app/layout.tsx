@@ -1,3 +1,4 @@
+"use client";
 // import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
@@ -5,6 +6,7 @@ import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
+import { Providers } from "./Provider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -43,10 +45,12 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Toaster position="top-center" reverseOrder={false} />
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster position="top-center" reverseOrder={false} />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
