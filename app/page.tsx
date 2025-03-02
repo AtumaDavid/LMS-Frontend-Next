@@ -12,6 +12,8 @@ export default function Page() {
   const [activeItem, setActiveItem] = useState(0);
   const [route, setRoute] = useState("Login");
 
+  console.log(setActiveItem);
+
   return (
     <div>
       <Heading

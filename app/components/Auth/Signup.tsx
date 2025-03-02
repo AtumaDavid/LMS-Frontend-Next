@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -9,6 +9,10 @@ import {
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { styles } from "@/app/styles/styles";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
 
 type Props = {
   setRoute?: (route: string) => void;
@@ -24,13 +28,51 @@ const schema = Yup.object({
 
 export default function Signup({ setRoute }: Props) {
   const [show, setShow] = useState(false);
+  const [register, { data, error, isSuccess }] = useRegisterMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "Registration successful";
+      toast.success(message);
+      setRoute?.("Verification");
+    }
+    if (error) {
+      // Improved error extraction logic to get precise messages
+      if ("data" in error) {
+        const errorData = error as FetchBaseQueryError;
+        let errorMessage = "Registration failed. Please try again.";
+
+        // Extract the exact error message from the server response
+        if (errorData.data) {
+          if (typeof errorData.data === "object") {
+            if ("message" in errorData.data) {
+              errorMessage = (errorData.data as { message: string }).message;
+            } else if ("error" in errorData.data) {
+              errorMessage = (errorData.data as { error: string }).error;
+            }
+          } else if (typeof errorData.data === "string") {
+            errorMessage = errorData.data;
+          }
+        }
+
+        // Display specific error message, like "Email already exists"
+        toast.error(errorMessage);
+      } else {
+        // Handle serialized errors
+        const serializedError = error as SerializedError;
+        const errorMessage =
+          serializedError.message || "An unexpected error occurred";
+        toast.error(errorMessage);
+      }
+    }
+  }, [isSuccess, error, data, setRoute]);
 
   const formik = useFormik({
     initialValues: { name: "", email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ name, email, password }) => {
-      console.log(name, email, password);
-      setRoute?.("Verification");
+      const data = { name, email, password };
+      await register(data);
     },
   });
 
@@ -40,12 +82,12 @@ export default function Signup({ setRoute }: Props) {
       <h1 className={`${styles.title}`}>Signup with E-Learn</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label className={`${styles.label}`} htmlFor="email">
+          <label className={`${styles.label}`} htmlFor="name">
             Enter Your Name
           </label>
           <input
             type="text"
-            name=""
+            name="name"
             value={values.name}
             onChange={handleChange}
             id="name"
@@ -64,7 +106,7 @@ export default function Signup({ setRoute }: Props) {
           </label>
           <input
             type="email"
-            name=""
+            name="email"
             value={values.email}
             onChange={handleChange}
             id="email"
@@ -82,7 +124,6 @@ export default function Signup({ setRoute }: Props) {
             Enter Your Password
           </label>
           <input
-            // type="password"
             type={!show ? "password" : "text"}
             name="password"
             value={values.password}
