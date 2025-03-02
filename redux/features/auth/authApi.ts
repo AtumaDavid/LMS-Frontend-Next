@@ -21,21 +21,24 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          dispatch(
-            userRegistration({
-              token: result.data.activationToken,
-            })
-          );
+          // dispatch(
+          //   userRegistration({
+          //     token: result.data.activationToken,
+          //   })
+          // );
+          if (result.data.activationToken) {
+            dispatch(userRegistration({ token: result.data.activationToken }));
+          }
         } catch (error) {
           console.log(error);
         }
       },
     }),
     activation: builder.mutation({
-      query: ({ actiivation_token, activation_code }) => ({
-        url: "/activate-user",
+      query: ({ activation_token, activation_code }) => ({
+        url: "activate-user",
         method: "POST",
-        body: { actiivation_token, activation_code },
+        body: { activation_token, activation_code },
         credentials: "include" as const,
       }),
     }),
