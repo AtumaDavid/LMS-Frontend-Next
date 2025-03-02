@@ -32,8 +32,9 @@ export default function Verification({ setRoute }: Props) {
     }
     if (error) {
       if ("data" in error && error.data) {
-        const errorData = error.data as { message: string };
-        toast.error(errorData.message);
+        const errorData = error.data as { error: string };
+        toast.error(errorData.error);
+        setInvalidError(true);
       } else {
         console.log("an error occurred", error);
         toast.error("An error occurred");
@@ -59,10 +60,18 @@ export default function Verification({ setRoute }: Props) {
     // console.log("test");
     // setInvalidError(true);
     const VerificationNumber = Object.values(verifyNumber).join("");
-    if (VerificationNumber.length != 4) {
+    if (VerificationNumber.length !== 4) {
       setInvalidError(true);
       return;
     }
+
+    if (!token) {
+      toast.error("Activation token is missing");
+      return;
+    }
+
+    // console.log("Sending activation request with token:", token);
+
     await activation({
       activation_token: token,
       activation_code: VerificationNumber,
