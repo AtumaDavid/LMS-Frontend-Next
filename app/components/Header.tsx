@@ -8,6 +8,22 @@ import CustomModal from "../utils/CustomModal";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import Verification from "./Auth/Verification";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useSession } from "next-auth/react";
+import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import toast from "react-hot-toast";
+// import Image from "next/image";
+
+interface User {
+  token: string;
+  name: string;
+}
+
+interface AuthState {
+  token: string;
+  user: string; // JSON string of user data
+}
 
 type Props = {
   open: boolean;
@@ -26,6 +42,51 @@ export default function Header({
 }: Props) {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [active, setActive] = useState(false);
+  // const user = useSelector((state: RootState) => state.auth.user);
+  const auth = useSelector((state: RootState) => state.auth) as AuthState;
+  // console.log("auth.user type:", typeof auth.user);
+  // console.log("auth.user value:", auth.user);
+
+  const { data } = useSession();
+  const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+  // console.log(data);
+  useEffect(() => {
+    // Check if social auth session data exists and user is not already authenticated
+    if (data && !auth.token) {
+      const { user: sessionUser } = data; // Destructure user data from session
+      if (sessionUser) {
+        // Call the socialAuth mutation with the necessary data
+        socialAuth({
+          email: sessionUser.email,
+          name: sessionUser.name,
+          avatar: sessionUser.image,
+        });
+      }
+    }
+    if (isSuccess && !auth.token) {
+      toast.success("Logged In Successfully");
+    }
+    if (error && !auth.token) {
+      console.log(error);
+
+      toast.success("Error logging in");
+    }
+  }, [data, auth.token, socialAuth, isSuccess, error]);
+
+  // Use a try-catch to handle potential parsing errors
+  let user = null;
+  try {
+    user = auth.user
+      ? typeof auth.user === "string"
+        ? (JSON.parse(auth.user) as User)
+        : (auth.user as User)
+      : null;
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    user = null;
+  }
+
+  // console.log("user:", user.user);
 
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
@@ -58,6 +119,16 @@ export default function Header({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // Function to get initials from the name
+  const getInitials = (name: string | undefined) => {
+    if (!name) return "";
+    const nameParts = name.split(" ");
+    let initials = "";
+    if (nameParts.length > 0) initials += nameParts[0][0]; // First name initial
+    if (nameParts.length > 1) initials += nameParts[1][0]; // Last name initial
+    return initials.toUpperCase();
+  };
 
   // const handleClose = (e:any) => {
   //   if (e.target.id === "screen") {
@@ -96,11 +167,20 @@ export default function Header({
                   onClick={() => setOpenSidebar(true)}
                 />
               </div>
-              <HiOutlineUserCircle
-                size={25}
-                className="hidden 800px:block cursor-pointer dark:text-white text-black"
-                onClick={() => setOpen(true)}
-              />
+              {user ? (
+                <Link
+                  href={"/profile"}
+                  className="w-[30px] h-[30px] rounded-full font-bold p-3 items-center bg-primary-light flex justify-center text-white"
+                >
+                  {getInitials(user.name)}
+                </Link>
+              ) : (
+                <HiOutlineUserCircle
+                  size={25}
+                  className="cursor-pointer ml-5 my-2 dark:text-white text-black"
+                  onClick={() => setOpen(true)}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -113,11 +193,20 @@ export default function Header({
           >
             <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 top-0 right-0 ">
               <NavItems activeItem={activeItem} isMobile={true} />
-              <HiOutlineUserCircle
-                size={25}
-                className="cursor-pointer ml-5 my-2 dark:text-white text-black "
-                onClick={() => setOpen(true)}
-              />
+              {user ? (
+                <Link
+                  href={"/profile"}
+                  className="w-[30px] h-[30px] rounded-full font-bold p-3 items-center bg-primary-light flex justify-center text-white"
+                >
+                  {getInitials(user.name)}
+                </Link>
+              ) : (
+                <HiOutlineUserCircle
+                  size={25}
+                  className="cursor-pointer ml-5 my-2 dark:text-white text-black"
+                  onClick={() => setOpen(true)}
+                />
+              )}
               <br />
               <br />
               <p className="text-[16px] px-2 pl-5 text-black dark:text-white">

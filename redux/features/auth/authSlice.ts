@@ -15,7 +15,8 @@ const authSlice = createSlice({
     },
     userLoggedIn: (state, action) => {
       state.token = action.payload.accessToken;
-      state.user = action.payload.user;
+      // state.user = action.payload.user;
+      state.user = JSON.stringify(action.payload.user);
     },
     userLoggedOut: (state) => {
       state.token = "";

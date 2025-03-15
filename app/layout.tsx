@@ -7,6 +7,9 @@ import "./globals.css";
 import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
+import { SessionProvider } from "next-auth/react";
+// import { PersistGate } from "redux-persist/integration/react";
+// import { persistor } from "@/redux/store";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -46,10 +49,14 @@ export default function RootLayout({
         className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
         <Providers>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-            <Toaster position="top-center" reverseOrder={false} />
-          </ThemeProvider>
+          {/* <PersistGate loading={null} persistor={persistor}> */}
+          <SessionProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+              <Toaster position="top-center" reverseOrder={false} />
+            </ThemeProvider>
+          </SessionProvider>
+          {/* </PersistGate> */}
         </Providers>
       </body>
     </html>
