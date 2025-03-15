@@ -6,6 +6,7 @@ type RegistrationResponse = {
   activationToken: string;
 };
 
+// test
 type RegistrationData = {};
 
 export const authApi = apiSlice.injectEndpoints({
