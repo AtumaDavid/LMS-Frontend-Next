@@ -12,6 +12,8 @@ import { styles } from "@/app/styles/styles";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   setRoute?: (route: string) => void;
@@ -28,6 +30,7 @@ const schema = Yup.object({
 export default function Login({ setRoute, setOpen }: Props) {
   const [show, setShow] = useState(false);
   const [login, { isSuccess, error }] = useLoginMutation();
+  const { token } = useSelector((state: RootState) => state.auth);
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
@@ -39,7 +42,7 @@ export default function Login({ setRoute, setOpen }: Props) {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !token) {
       toast.success("Login successful");
       setOpen(false);
     }
@@ -49,7 +52,7 @@ export default function Login({ setRoute, setOpen }: Props) {
         toast.error(errorData.data.error);
       }
     }
-  }, [isSuccess, error, setOpen]);
+  }, [isSuccess, error, setOpen, token]);
 
   const { errors, touched, values, handleChange, handleSubmit } = formik;
   return (
