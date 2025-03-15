@@ -7,3 +7,4 @@
 - @reduxjs/toolkit
 - formik
 - yup
+- next-auth

@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
-import { userRegistration } from "./authSlice";
+import { userLoggedIn, userRegistration } from "./authSlice";
 
 type RegistrationResponse = {
   message: string;
@@ -21,6 +21,7 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
+          // console.log("Register response:", result.data);
           // dispatch(
           //   userRegistration({
           //     token: result.data.activationToken,
@@ -42,7 +43,70 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include" as const,
       }),
     }),
+    login: builder.mutation({
+      query: ({ email, password }) => ({
+        url: "login",
+        method: "POST",
+        body: { email, password },
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          // console.log("Login response:", result.data);
+          // dispatch(
+          //   userRegistration({
+          //     token: result.data.activationToken,
+          //   })
+          // );
+          if (result.data.accessToken) {
+            dispatch(
+              userLoggedIn({
+                accessToken: result.data.accessToken,
+                user: result.data.user,
+              })
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    socialAuth: builder.mutation({
+      query: ({ email, name, avatar }) => ({
+        url: "social-auth",
+        method: "POST",
+        body: { email, name, avatar },
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          // console.log("Login response:", result.data);
+          // dispatch(
+          //   userRegistration({
+          //     token: result.data.activationToken,
+          //   })
+          // );
+          if (result.data.accessToken) {
+            dispatch(
+              userLoggedIn({
+                accessToken: result.data.accessToken,
+                user: result.data.user,
+              })
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
   }),
 });
 
-export const { useRegisterMutation, useActivationMutation } = authApi;
+export const {
+  useRegisterMutation,
+  useActivationMutation,
+  useLoginMutation,
+  useSocialAuthMutation,
+} = authApi;
