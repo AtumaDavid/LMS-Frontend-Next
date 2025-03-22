@@ -17,7 +17,6 @@ export const apiSlice = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          console.log("RefreshToken result:", result.data);
           if (result.data?.accessToken) {
             dispatch(
               userLoggedIn({
@@ -40,16 +39,10 @@ export const apiSlice = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          console.log("loadUser result:", result.data);
-          // dispatch(
-          //   userRegistration({
-          //     token: result.data.activationToken,
-          //   })
-          // );
-          if (result.data.activationToken || result.data?.user) {
+          if (result.data?.user) {
             dispatch(
               userLoggedIn({
-                accessToken: result.data.accessToken,
+                accessToken: result.data.accessToken || "", // Fallback if no token
                 user: result.data.user,
               })
             );

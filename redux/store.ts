@@ -84,31 +84,71 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/api/apiSlice";
 import authSlice from "./features/auth/authSlice";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
+// Persist config for the auth slice
+const persistConfig = {
+  key: "auth",
+  storage,
+};
+
+const persistedAuthReducer = persistReducer(persistConfig, authSlice);
+
+// export const store = configureStore({
+//   reducer: {
+//     [apiSlice.reducerPath]: apiSlice.reducer,
+//     auth: authSlice,
+//   },
+//   devTools: false,
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware().concat(apiSlice.middleware),
+// });
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
-    auth: authSlice,
+    auth: persistedAuthReducer,
   },
   devTools: false,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }).concat(apiSlice.middleware),
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 
-const initializeApp = async () => {
-  const storedToken = localStorage.getItem("accessToken");
+// const initializeApp = async () => {
+//   const storedToken = localStorage.getItem("accessToken");
 
-  if (!storedToken) {
+//   if (!storedToken) {
+//     await store.dispatch(
+//       apiSlice.endpoints.RefreshToken.initiate({}, { forceRefetch: true })
+//     );
+//   } else {
+//     await store.dispatch(
+//       apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
+//     );
+//   }
+// }
+// ;
+
+
+// Initialize app (runs on client-side load)
+const initializeApp = async () => {
+  const state = store.getState();
+  if (!state.auth.token) {
     await store.dispatch(
       apiSlice.endpoints.RefreshToken.initiate({}, { forceRefetch: true })
     );
-  } else {
-    await store.dispatch(
-      apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
-    );
   }
+  await store.dispatch(
+    apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
+  );
 };
 
 initializeApp();
