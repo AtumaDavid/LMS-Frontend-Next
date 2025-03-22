@@ -6,12 +6,14 @@ import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
 import { SessionProvider, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
 import { setSocialAuthCompleted } from "@/redux/features/auth/authSlice";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import Loader from "./components/Loader/Loader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,14 +28,13 @@ const josefin = Josefin_Sans({
 });
 
 function AppContent({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true); // For loading screen
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const { data, status } = useSession();
   const [
     socialAuth,
     { isSuccess, error, isLoading: isSocialAuthLoading },
-  ] = useSocialAuthMutation(); // Renamed
+  ] = useSocialAuthMutation();
 
   // Handle social auth at the app level
   useEffect(() => {
@@ -42,7 +43,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
       !auth.token &&
       !auth.socialAuthCompleted &&
       data &&
-      !isSocialAuthLoading // Use renamed variable
+      !isSocialAuthLoading
     ) {
       const { user: sessionUser } = data;
       if (sessionUser) {
@@ -70,28 +71,23 @@ function AppContent({ children }: { children: React.ReactNode }) {
     socialAuth,
     isSuccess,
     error,
-    isSocialAuthLoading, // Use renamed variable
+    isSocialAuthLoading,
     dispatch,
   ]);
 
-  useEffect(() => {
-    setTimeout(() => setIsLoading(false), 500); // Adjust timeout as needed
-  }, []);
-
   return (
     <>
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="text-white text-xl font-Poppins">Loading...</div>
-        </div>
-      )}
-      <div className={`${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
-        {children}
-      </div>
+      {children}
       <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 }
+
+const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isLoading } = useLoadUserQuery({});
+
+  return <>{isLoading ? <Loader /> : children}</>;
+};
 
 export default function RootLayout({
   children,
@@ -106,7 +102,9 @@ export default function RootLayout({
         <Providers>
           <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <AppContent>{children}</AppContent>
+              <Custom>
+                <AppContent>{children}</AppContent>
+              </Custom>
             </ThemeProvider>
           </SessionProvider>
         </Providers>
