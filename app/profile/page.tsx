@@ -29,7 +29,7 @@ export default function ProfilePage() {
           setRoute={setRoute}
           route={route}
         />
-        <Profile />
+        <Profile user={user} />
       </Protected>
     </div>
   );
