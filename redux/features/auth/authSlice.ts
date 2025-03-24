@@ -1,9 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface User {
+  name: string;
+  email?: string;
+  avatar?: string;
+}
+
+interface AuthState {
+  token: string;
+  user: User | null; 
+  socialAuthCompleted: boolean;
+}
+
+const initialState: AuthState = {
   token: "",
-  user: "",
-  socialAuthCompleted: false, // New flag
+  user: null,
+  socialAuthCompleted: false,
 };
 
 const authSlice = createSlice({
@@ -19,7 +31,7 @@ const authSlice = createSlice({
     },
     userLoggedOut: (state) => {
       state.token = "";
-      state.user = "";
+      state.user = null;
       state.socialAuthCompleted = false; // Reset on logout
     },
     setSocialAuthCompleted: (state, action) => {
