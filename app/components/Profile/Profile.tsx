@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import SidebarProfile from "./SidebarProfile";
-import { useLogOutQuery } from "@/redux/features/auth/authApi";
+import { useLogOutMutation } from "@/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { userLoggedOut } from "@/redux/features/auth/authSlice";
+import { redirect } from "next/navigation";
+import Loader from "../Loader/Loader";
 // import { redirect } from "next/navigation";
 // import { User } from "@/redux/features/auth/authSlice";
 
@@ -29,18 +31,44 @@ export default function Profile({ user }: ProfileProps) {
   const [scroll, setScroll] = React.useState(false);
   const [avatar] = React.useState(null);
   const [active, setActive] = React.useState(1);
-  const [logout, setLogout] = React.useState(false);
-  const {} = useLogOutQuery(undefined, { skip: !logout ? true : false });
+  // const [logout, setLogout] = React.useState(false);
+  // const {} = useLogOutQuery(undefined, { skip: !logout ? true : false });
+  const [logOut, { isLoading, error }] = useLogOutMutation();
+  // const router = useRouter();
 
   const dispatch = useDispatch();
 
+  // const logoutHandler = async () => {
+  //   try {
+  //     await signOut({ redirect: false });
+
+  //     setLogout(true);
+
+  //     dispatch(userLoggedOut());
+  //   } catch (error) {
+  //     console.error("Logout error:", error);
+  //   }
+  // };
   const logoutHandler = async () => {
     try {
+      // Step 1: Call the backend to clear access_token and refresh_token
+      const logoutResponse = await logOut().unwrap();
+      if (!logoutResponse.success) {
+        throw new Error("Failed to log out from backend");
+      }
+
+      // Step 2: Clear the next-auth session
       await signOut({ redirect: false });
 
-      setLogout(true);
-
+      // Step 3: Clear Redux state
       dispatch(userLoggedOut());
+
+      // Step 4: Redirect to the login page
+      // setTimeout(() => {
+      //   router.push("/");
+      // }, 100);
+
+      redirect("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -76,6 +104,18 @@ export default function Profile({ user }: ProfileProps) {
           logoutHandler={logoutHandler}
         />
       </div>
+
+      {/* Loading Overlay */}
+      {isLoading && <Loader />}
+
+      {/* Error Message */}
+      {error && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+          {error instanceof Error
+            ? error.message
+            : "An error occurred during logout. Please try again."}
+        </div>
+      )}
     </div>
   );
 }
