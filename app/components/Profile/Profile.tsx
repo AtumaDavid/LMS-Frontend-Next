@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { userLoggedOut } from "@/redux/features/auth/authSlice";
 import { redirect } from "next/navigation";
 import Loader from "../Loader/Loader";
+import ProfileInfo from "./ProfileInfo";
 // import { redirect } from "next/navigation";
 // import { User } from "@/redux/features/auth/authSlice";
 
@@ -104,6 +105,11 @@ export default function Profile({ user }: ProfileProps) {
           logoutHandler={logoutHandler}
         />
       </div>
+      {active === 1 && (
+        <div className="w-full h-full bg-transparent mt-[80px]">
+          <ProfileInfo user={user} avatar={avatar} />
+        </div>
+      )}
 
       {/* Loading Overlay */}
       {isLoading && <Loader />}
