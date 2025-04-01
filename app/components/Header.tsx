@@ -125,7 +125,7 @@ export default function Header({
               {user ? (
                 <Link
                   href={"/profile"}
-                  className="w-[30px] h-[30px] rounded-full font-bold p-3 items-center bg-primary-light flex justify-center text-white"
+                  className="w-[40px] h-[40px] rounded-full p-3 items-center bg-primary-light flex justify-center text-white"
                 >
                   {getInitials(user.name)}
                 </Link>
@@ -150,7 +150,7 @@ export default function Header({
               {user ? (
                 <Link
                   href={"/profile"}
-                  className="w-[30px] h-[30px] rounded-full font-bold p-3 items-center bg-primary-light flex justify-center text-white"
+                  className="w-[30px] h-[30px] rounded-full p-3 items-center bg-primary-light flex justify-center text-white"
                 >
                   {getInitials(user.name)}
                 </Link>
