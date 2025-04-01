@@ -103,22 +103,29 @@ export const authApi = apiSlice.injectEndpoints({
       },
     }),
     // log out
-    logOut: builder.query<{ success: boolean; message: string }, void>({
+    // logOut: builder.query<{ success: boolean; message: string }, void>({
+    //   query: () => ({
+    //     url: "logout",
+    //     method: "GET",
+    //     credentials: "include" as const,
+    //   }),
+    //   async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+    //     try {
+    //       const { data } = await queryFulfilled;
+    //       if (data.success) {
+    //         dispatch(userLoggedOut());
+    //       }
+    //     } catch (error) {
+    //       console.error("Logout failed:", error);
+    //     }
+    //   },
+    // }),
+    logOut: builder.mutation<{ success: boolean; message: string }, void>({
       query: () => ({
         url: "logout",
         method: "GET",
         credentials: "include" as const,
       }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          if (data.success) {
-            dispatch(userLoggedOut());
-          }
-        } catch (error) {
-          console.error("Logout failed:", error);
-        }
-      },
     }),
   }),
 });
@@ -128,5 +135,6 @@ export const {
   useActivationMutation,
   useLoginMutation,
   useSocialAuthMutation,
-  useLogOutQuery
+  // useLogOutQuery
+  useLogOutMutation
 } = authApi;
